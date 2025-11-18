@@ -1,5 +1,5 @@
-const express = require('express');
-const subscriptionController = require('./../controllers/subscriptionController');
+import express from 'express';
+import * as subscriptionController from './../controllers/subscriptionController.js';
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router
   .get(subscriptionController.getSubscription)
   .patch(subscriptionController.updateSubscription)
   .delete(subscriptionController.deletesubscription);
-module.exports = router;
+export default router;

@@ -1,8 +1,8 @@
-const Subscription = require('./../models/subscriptionModel');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+import Subscription from '../models/subscriptionModel.js';
+import catchAsync from '../utils/catchAsync.js';
+import AppError from '../utils/appError.js';
 
-exports.createSubscription = catchAsync(async (req, res, next) => {
+export const createSubscription = catchAsync(async (req, res, next) => {
   const sub = await Subscription.create(req.body);
   res.status(201).json({
     status: 'success',
@@ -10,7 +10,7 @@ exports.createSubscription = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getSubscriptions = catchAsync(async (req, res, next) => {
+export const getSubscriptions = catchAsync(async (req, res, next) => {
   const subs = await Subscription.find();
   res.status(200).json({
     status: 'success',
@@ -19,7 +19,7 @@ exports.getSubscriptions = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getSubscription = catchAsync(async (req, res, next) => {
+export const getSubscription = catchAsync(async (req, res, next) => {
   const subscription = await Subscription.findById(req.params.id);
   if (!subscription)
     return next(new AppError('no subscription with this id', 404));
@@ -29,7 +29,7 @@ exports.getSubscription = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateSubscription = catchAsync(async (req, res, next) => {
+export const updateSubscription = catchAsync(async (req, res, next) => {
   const subscription = await Subscription.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -46,7 +46,7 @@ exports.updateSubscription = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deletesubscription = catchAsync(async (req, res, next) => {
+export const deletesubscription = catchAsync(async (req, res, next) => {
   const subscription = await Subscription.findByIdAndDelete(req.params.id);
   if (!subscription) return next(new AppError('no subscription with this id'));
   res.status(200).json({

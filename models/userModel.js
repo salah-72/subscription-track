@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+import mongoose from 'mongoose';
+import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
   {
@@ -38,5 +39,12 @@ userSchema.virtual('subscriptions', {
   localField: '_id',
 });
 
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordConfirm = undefined;
+  next();
+});
+
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+export default User;

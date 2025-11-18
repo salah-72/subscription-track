@@ -1,17 +1,9 @@
-const User = require('./../models/userModel');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+import User from './../models/userModel.js';
+import catchAsync from '../utils/catchAsync.js';
+import AppError from '../utils/appError.js';
 
-exports.createUser = catchAsync(async (req, res, next) => {
-  const user = await User.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: user,
-  });
-});
-
-exports.getUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+export const getUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find().select('-password');
   res.status(200).json({
     status: 'success',
     len: users.length,
@@ -19,8 +11,10 @@ exports.getUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id).populate('subscriptions');
+export const getUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id)
+    .populate('subscriptions')
+    .select('-password');
   if (!user) return next(new AppError('no user with this id', 404));
 
   res.status(200).json({
@@ -29,7 +23,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUser = catchAsync(async (req, res, next) => {
+export const updateUser = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -41,7 +35,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteUser = catchAsync(async (req, res, next) => {
+export const deleteUser = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.params.id);
   if (!user) return next(new AppError('no user with this id', 404));
 

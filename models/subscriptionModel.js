@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const User = require('./userModel');
+import mongoose from 'mongoose';
+import User from './userModel.js';
 
 const subscriptionSchema = new mongoose.Schema(
   {
@@ -93,4 +93,4 @@ subscriptionSchema.pre(/^find/, function (next) {
 
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
-module.exports = Subscription;
+export default Subscription;

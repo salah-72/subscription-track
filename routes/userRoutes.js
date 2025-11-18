@@ -1,8 +1,11 @@
-const express = require('express');
-const userController = require('./../controllers/userController');
+import express from 'express';
+import * as userController from './../controllers/userController.js';
+import * as authController from './../controllers/authController.js';
+
 const router = express.Router();
 
-router.route('/').get(userController.getUsers).post(userController.createUser);
+router.use(authController.protect);
+router.get('/', userController.getUsers);
 
 router
   .route('/:id')
@@ -10,4 +13,4 @@ router
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
 
-module.exports = router;
+export default router;
