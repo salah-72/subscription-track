@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: './config.env' });
+
 import AppError from './../utils/appError.js';
 
 const castErrorHandler = (err) => {
@@ -39,6 +42,7 @@ const prodError = (err, res) => {
     });
   }
 };
+
 export default (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';

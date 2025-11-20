@@ -1,12 +1,27 @@
 import Subscription from '../models/subscriptionModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import { workflowClient } from '../utils/upstash.js';
 
 export const createSubscription = catchAsync(async (req, res, next) => {
-  const sub = await Subscription.create(req.body);
+  const subscription = await Subscription.create({
+    ...req.body,
+    user: req.user._id,
+  });
+
+  const { workflowRunId } = await workflowClient.trigger({
+    url: 'http://127.0.0.1:3000/api/v1/workflows/subscription/reminder',
+    body: {
+      subscriptionId: subscription._id,
+    },
+    headers: {
+      'content-type': 'application/json',
+    },
+    retries: 0,
+  });
   res.status(201).json({
     status: 'success',
-    data: sub,
+    data: { subscription, workflowRunId },
   });
 });
 
@@ -26,6 +41,14 @@ export const getSubscription = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: subscription,
+  });
+});
+
+export const getUserSubs = catchAsync(async (req, res, next) => {
+  const mySubs = await Subscription.find({ user: req.user._id });
+  res.status(200).json({
+    status: 'success',
+    data: mySubs,
   });
 });
 
